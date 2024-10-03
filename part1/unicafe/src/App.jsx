@@ -1,7 +1,17 @@
 import { useState } from 'react'
+import './App.css'
 
 const StatisticLine = ({ value, text }) => (
-    <p>{text} {value}</p>
+  <div>
+    <table>
+      <tbody>
+        <tr>
+          <td className="statistic-text">{text}</td>
+          <td>{value}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 )
 
 const Statistics = (props) => {
