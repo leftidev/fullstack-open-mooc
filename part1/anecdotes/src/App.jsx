@@ -32,16 +32,24 @@ const App = () => {
     setSelected(selected)
   }
 
-  
+  const getMaxVotesIndex = () => {
+    return points.indexOf(Math.max(...points));
+  };
+
+  const maxVotesIndex = getMaxVotesIndex();
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p>has {points[selected]} votes</p>
       <p>
       <Button handleClick={handleVote} text='vote' />
       <Button handleClick={handleSetSelected} text='next anecdote' />
       </p>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[maxVotesIndex]}</p>
+      <p>has {points[maxVotesIndex]} votes</p>
     </div>
   )
 }
