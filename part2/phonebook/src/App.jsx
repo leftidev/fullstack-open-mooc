@@ -4,20 +4,22 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    personService
+    .getAll()
+    .then(initialPersons => {
+      setPersons(initialPersons)
+    })
   }, [])
 
   const addPerson = (event) => {
@@ -38,16 +40,20 @@ const App = () => {
             setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
+            setMessage(`Updated ${newName}'s number`)
+            setMessageType('success')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
           })
-
+          .catch(error => {
+            setMessage(`Information of ${newName} has already been removed from server`)
+            setMessageType('error')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
       }
-      setErrorMessage(
-        `${existingPerson.name} number changed to '${newNumber}'`
-      )
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-
     } else {
       personService
         .create(personObject)
@@ -55,26 +61,37 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
-        })
-        setErrorMessage(
-          `Added '${personObject.name}'`
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      }
-    }
-
-  const deletePerson = (id) => {
-    const person = persons.find(p => p.id === id)
-    if (window.confirm(`Delete ${person.name}?`)) {
-      personService
-        .deletePerson(id)
-        .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
+          setMessage(`Added ${newName}`)
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
         })
     }
   }
+
+    const deletePerson = (id) => {
+      const person = persons.find(p => p.id === id)
+      if (window.confirm(`Delete ${person.name}?`)) {
+        personService
+          .deletePerson(id)
+          .then(() => {
+            setPersons(persons.filter(p => p.id !== id))
+            setMessage(`Deleted ${person.name}`)
+            setMessageType('success')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setMessage(`Information of ${person.name} has already been removed from server`)
+            setMessageType('error')
+            setTimeout(() => {
+              setMessage(null)
+            }, 5000)
+          })
+      }
+    }
 
   const handleNameChange = (event) => {
     console.log(event.target.value)
@@ -93,22 +110,10 @@ const App = () => {
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
 
-  const Notification = ({ message }) => {
-    if (message === null) {
-      return null
-    }
-  
-    return (
-      <div className='error'>
-        {message}
-      </div>
-    )
-  }
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={message} type={messageType} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new</h2>
       <PersonForm 
