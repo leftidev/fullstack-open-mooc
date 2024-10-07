@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     axios
@@ -38,7 +39,15 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
+
       }
+      setErrorMessage(
+        `${existingPerson.name} number changed to '${newNumber}'`
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+
     } else {
       personService
         .create(personObject)
@@ -47,8 +56,14 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+        setErrorMessage(
+          `Added '${personObject.name}'`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
     }
-  }
 
   const deletePerson = (id) => {
     const person = persons.find(p => p.id === id)
@@ -78,9 +93,22 @@ const App = () => {
     person.name.toLowerCase().includes(filter.toLowerCase())
   )
 
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className='error'>
+        {message}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter value={filter} onChange={handleFilterChange} />
       <h2>Add a new</h2>
       <PersonForm 
