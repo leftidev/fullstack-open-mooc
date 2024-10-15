@@ -26,7 +26,7 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      id: String(persons.length + 1)
+      number: newNumber
     }
 
     const existingPerson = persons.find(person => person.name === newName)
@@ -107,7 +107,7 @@ const App = () => {
   }
 
   const filteredPersons = persons.filter(person =>
-    person.name.toLowerCase().includes(filter.toLowerCase())
+    person.name && person.name.toLowerCase().includes(filter.toLowerCase())
   )
 
   return (
