@@ -6,6 +6,7 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const { url } = require('node:inspector')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -78,6 +79,30 @@ test.only('deletion of a note succeeds with status code 204 if id is valid', asy
 
   const titles = blogsAtEnd.map(r => r.title)
   assert(!titles.includes(blogToDelete.title))
+})
+
+test.only('a valid blog can be updated ', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedBlog = {
+    title: "Updated Title",
+    author: "Updated Author",
+    url: "http://updated_url.com",
+    likes: 1337
+  }
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  assert.strictEqual(response.body.title, "Updated Title")
+  assert.strictEqual(response.body.author, "Updated Author")
+  assert.strictEqual(response.body.url, "http://updated_url.com")
+  assert.strictEqual(response.body.likes, 1337)
 })
 
 after(async () => {
