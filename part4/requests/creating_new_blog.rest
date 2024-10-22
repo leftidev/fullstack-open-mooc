@@ -1,8 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImphanViZXJnIiwiaWQiOiI2NzE2MTg1MmZlODJjNzJjY2Q2ODcyMzEiLCJpYXQiOjE3Mjk1ODEyMzl9.nsrkcfFwDmJHI4KeifsvSnF3HNmCdPEsC0os_x89qW4
 
 {
-  "title": "REST is easy",
+  "title": "Single page apps use token based auth",
   "author": "JeBe",
   "url": "localhost:3003/api/blogs",
   "likes": 1337
