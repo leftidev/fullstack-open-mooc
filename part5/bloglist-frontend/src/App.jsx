@@ -73,12 +73,33 @@ const App = () => {
     blogService
     .create(blogObject)
     .then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
+      const blogWithUser = { ...returnedBlog, user }
+      setBlogs(blogs.concat(blogWithUser))
       setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added!`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     })
+  }
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this blog?')) {
+      blogService
+        .remove(id)
+        .then(() => {
+          setBlogs(blogs.filter(blog => blog.id !== id))
+          setErrorMessage('Blog deleted successfully')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage('Failed to delete blog')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+    }
   }
 
   const loginForm = () => (
@@ -133,8 +154,10 @@ const App = () => {
           createBlog={addBlog}
         />
       </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog =>
+          <Blog key={blog.id} blog={blog} user={user} handleDelete={handleDelete}/>
       )}
       </div>
     }
