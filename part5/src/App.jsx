@@ -73,11 +73,6 @@ const App = () => {
     blogService
     .create(blogObject)
     .then(returnedBlog => {
-      console.log('returnedBlog:', returnedBlog); // Debugging blogs response
-      console.log('returnedBlog.user:', returnedBlog.user); // Debugging blogs response
-      console.log('returnedBlog.user.id:', returnedBlog.user.id); // Debugging blogs response
-      console.log('user:', user); // Debugging blogs response
-      console.log('user.id:', user.id); // Debugging blogs response
       const blogWithUser = { ...returnedBlog, user};
       setBlogs(blogs.concat(blogWithUser))
       setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added!`)
