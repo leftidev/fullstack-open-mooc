@@ -178,7 +178,7 @@ const App = () => {
     <Notification message={errorMessage} />
       {user === null ?
       loginForm() :
-      <div>
+      <div  data-testid="blog-item">
         <h2>blogs</h2>
         <p>{user.name} logged-in</p>
         <button onClick={handleLogout}>logout</button>

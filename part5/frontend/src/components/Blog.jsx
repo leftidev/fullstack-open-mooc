@@ -28,7 +28,8 @@ const Blog = ({ blog, user, handleDelete, handleLike }) => {
         <div>
           <p>{blog.url}</p>
           <p>
-            {blog.likes} likes{' '}
+          <span data-testid="likes">
+            {blog.likes}</span> likes{' '}
             <button onClick={() => handleLike(blog.id)}>like</button>
           </p>
           <p>{blog.user ? blog.user.name : 'Unknown user'}</p>
