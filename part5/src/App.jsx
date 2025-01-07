@@ -73,7 +73,12 @@ const App = () => {
     blogService
     .create(blogObject)
     .then(returnedBlog => {
-      const blogWithUser = { ...returnedBlog, user }
+      console.log('returnedBlog:', returnedBlog); // Debugging blogs response
+      console.log('returnedBlog.user:', returnedBlog.user); // Debugging blogs response
+      console.log('returnedBlog.user.id:', returnedBlog.user.id); // Debugging blogs response
+      console.log('user:', user); // Debugging blogs response
+      console.log('user.id:', user.id); // Debugging blogs response
+      const blogWithUser = { ...returnedBlog, user};
       setBlogs(blogs.concat(blogWithUser))
       setErrorMessage(`a new blog '${returnedBlog.title}' by '${returnedBlog.author}' added!`)
       setTimeout(() => {
@@ -101,6 +106,39 @@ const App = () => {
         })
     }
   }
+
+  const handleLike = (id) => {
+    const blogToUpdate = blogs.find((blog) => blog.id === id);
+  
+    if (blogToUpdate) {
+      const updatedBlog = {
+        ...blogToUpdate,
+        likes: blogToUpdate.likes + 1,
+        user: blogToUpdate.user.id, // Ensure `user` is structured properly for the backend
+      };
+  
+      blogService
+        .update(id, updatedBlog)
+        .then((returnedBlog) => {
+          setBlogs(
+            blogs.map((blog) =>
+              blog.id === id ? { ...blog, likes: returnedBlog.likes } : blog
+            )
+          );
+          setErrorMessage(`You liked '${returnedBlog.title}'!`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.error('Error updating likes:', error);
+          setErrorMessage('Failed to update likes');
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
+    }
+  };
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -156,9 +194,15 @@ const App = () => {
       </Togglable>
       {blogs
         .sort((a, b) => b.likes - a.likes)
-        .map(blog =>
-          <Blog key={blog.id} blog={blog} user={user} handleDelete={handleDelete}/>
-      )}
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+          />
+        ))}
       </div>
     }
     </div>
