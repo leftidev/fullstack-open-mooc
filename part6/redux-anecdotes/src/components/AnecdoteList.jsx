@@ -1,10 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { vote } from '../reducers/anecdoteReducer'
 
-const Notes = () => {
+const Anecdotes = () => {
 
   const dispatch = useDispatch()
-  const anecdotes = useSelector(state => state)
+  //const anecdotes = useSelector(state => state.content)
+
+  const anecdotes = useSelector(({ anecdotes, filter }) => {
+    if (filter === '') {
+      return anecdotes
+    }
+    return anecdotes.filter(anecdote =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase())
+    )
+  })
 
   const sortedAnecdotes = anecdotes.slice().sort((a, b) => b.votes - a.votes);
 
@@ -24,4 +33,4 @@ const Notes = () => {
     </div>)
 }
 
-export default Notes
+export default Anecdotes
