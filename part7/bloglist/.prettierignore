@@ -1,0 +1,5 @@
+# Ignore everything
+*
+
+# Except files in the src directory
+!src/*
