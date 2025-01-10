@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Blog from './components/Blog'
 import blogService from './services/blogs'
@@ -6,6 +7,8 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import { useNotification } from './NotificationContext';
+import Users from './components/Users';
+import UserDetail from './components/UserDetail';
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -188,32 +191,50 @@ const App = () => {
   if (isError) return <div>Failed to load blogs. Please try again.</div>;
 
   return (
-    <div>
-      <Notification />
-      {user === null ? (
-        loginForm()
-      ) : (
-        <div data-testid="blog-item">
-          <h2>blogs</h2>
-          <p>{user.name} logged-in</p>
-          <button onClick={handleLogout}>logout</button>
-          <Togglable buttonLabel="new note" ref={noteFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                user={user}
-                handleDelete={handleDelete}
-                handleLike={handleLike}
+    <Router>
+      <div>
+        <Notification />
+        {user === null ? (
+          loginForm()
+        ) : (
+          <div>
+            <nav>
+              <Link to="/blogs">Blogs</Link>
+              {' | '}
+              <Link to="/users">Users</Link>
+              <h2>blogs</h2>
+              <p>{user.name} logged-in</p>
+              <button onClick={handleLogout}>logout</button>
+            </nav>
+            <Routes>
+              <Route
+                path="/blogs"
+                element={
+                  <div>
+                    <Togglable buttonLabel="new note" ref={noteFormRef}>
+                      <BlogForm createBlog={addBlog} />
+                    </Togglable>
+                    {blogs
+                      .sort((a, b) => b.likes - a.likes)
+                      .map((blog) => (
+                        <Blog
+                          key={blog.id}
+                          blog={blog}
+                          user={user}
+                          handleDelete={handleDelete}
+                          handleLike={handleLike}
+                        />
+                      ))}
+                  </div>
+                }
               />
-            ))}
-        </div>
-      )}
-    </div>
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserDetail />} /> {/* Add route for individual user */}
+            </Routes>
+          </div>
+        )}
+      </div>
+    </Router>
   )
 }
 
