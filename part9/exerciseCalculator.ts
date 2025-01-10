@@ -10,10 +10,7 @@ interface ExerciseResult {
   average: number;
 }
 
-function calculateExercises(
-  exercises: number[],
-  target: number
-): ExerciseResult {
+export function calculateExercises(exercises: number[], target: number): ExerciseResult {
   const periodLength = exercises.length;
   const trainingDays = exercises.filter((day) => day > 0).length;
   const average =
@@ -47,6 +44,7 @@ function calculateExercises(
   };
 }
 
+if (require.main === module) {
 try {
   const { target, exercises } = parseExerciseArguments(process.argv);
   console.log(calculateExercises(exercises, target));
@@ -56,4 +54,5 @@ try {
     errorMessage += " Error: " + error.message;
   }
   console.log(errorMessage);
+}
 }
