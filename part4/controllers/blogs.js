@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const Comment = require('../models/Comment')
 const jwt = require('jsonwebtoken')
 
 
@@ -11,6 +12,32 @@ const getTokenFrom = request => {
   }
   return null
 }
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { id } = request.params;
+  const { content } = request.body;
+
+  const blog = await Blog.findById(id);
+
+  if (!blog) {
+    return response.status(404).json({ error: 'Blog not found' });
+  }
+
+  const comment = new Comment({
+    content,
+    blog: blog._id,
+  });
+
+  try {
+    const savedComment = await comment.save();
+    blog.comments = blog.comments.concat(savedComment._id);  // Link the comment to the blog
+    await blog.save();
+
+    response.status(201).json(savedComment);
+  } catch (error) {
+    response.status(400).json({ error: 'Failed to save comment' });
+  }
+})
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog
@@ -48,7 +75,7 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
+  const blog = await Blog.findById(request.params.id).populate('user', { name: 1 }).populate('comments');;
   if (blog) {
     response.json(blog)
   } else {

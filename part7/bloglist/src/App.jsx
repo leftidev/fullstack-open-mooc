@@ -1,14 +1,16 @@
 import { useRef, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
-import { useNotification } from './NotificationContext';
 import Users from './components/Users';
 import UserDetail from './components/UserDetail';
+import BlogDetail from './components/BlogDetail';
+import { useNotification } from './NotificationContext';
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -228,8 +230,9 @@ const App = () => {
                   </div>
                 }
               />
+              <Route path="/blogs/:id" element={<BlogDetail />} />
               <Route path="/users" element={<Users />} />
-              <Route path="/users/:id" element={<UserDetail />} /> {/* Add route for individual user */}
+              <Route path="/users/:id" element={<UserDetail />} />
             </Routes>
           </div>
         )}
