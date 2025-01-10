@@ -2,9 +2,8 @@
 
 Exercise submissions for Full Stack open by University of Helsinki. https://fullstackopen.com/en/
 
-# Table of Contents
-
 **Part 0**: Fundamentals of Web Apps
+
 **Part 1**: Introduction to React
 **Part 2**: Communicating with Server
 **Part 3**: Programming a server with NodeJS and Express
