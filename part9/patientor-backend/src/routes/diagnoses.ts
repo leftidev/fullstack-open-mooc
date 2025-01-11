@@ -1,18 +1,10 @@
 import express from 'express';
-import diagnosesData from '../../data/diagnoses';
+import diagnosisService from '../services/diagnosisService';
 
 const router = express.Router();
 
-interface Diagnosis {
-  code: string;
-  name: string;
-  latin?: string;
-}
-
-const diagnoses: Diagnosis[] = diagnosesData;
-
 router.get('/', (_req, res) => {
-  res.json(diagnoses);
+  res.json(diagnosisService.getDiagnoses());
 });
 
 export default router;
