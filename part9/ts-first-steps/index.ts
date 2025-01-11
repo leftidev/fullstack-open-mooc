@@ -39,8 +39,8 @@ app.post('/exercises', (req, res) => {
   if (isNaN(Number(target)) || !Array.isArray(daily_exercises)) {
     res.status(400).json({ error: "malformatted parameters" });
   }
-  
-   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const result = calculateExercises(daily_exercises, target);
   res.json(result);
 });
