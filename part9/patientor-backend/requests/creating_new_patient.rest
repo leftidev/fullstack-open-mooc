@@ -6,6 +6,6 @@ Content-Type: application/json
   "name": "Alice Johnson",
   "dateOfBirth": "1992-03-15",
   "ssn": "987-65-4321",
-  "gender": "female",
-  "occupation": "Teacher"
+  "gender": "other",
+  "occupation": ""
 }
