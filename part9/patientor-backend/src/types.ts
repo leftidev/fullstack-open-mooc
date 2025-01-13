@@ -16,3 +16,5 @@ export interface Diagnosis {
   name: string;
   latin?: string; // Optional field
 }
+
+export type NewPatient = Omit<Patient, 'id'>;
